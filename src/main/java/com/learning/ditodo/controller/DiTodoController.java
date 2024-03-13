@@ -43,14 +43,12 @@ public class DiTodoController {
 
 		return responseMap;
 	}
-	
+
 	@GetMapping("/todos/{id}")
 	public static Map<String, Object> getTodoById(@PathVariable int id) {
 		Map<String, Object> responseMap = new HashMap<>();
 
-		
-		DiTodo diTodo = diTodos.stream().filter(t -> t.getId()==id).findFirst().get();
-
+		DiTodo diTodo = diTodos.stream().filter(t -> t.getId() == id).findFirst().get();
 
 		responseMap.put("status", 200);
 		responseMap.put("data", diTodo);
