@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,6 +39,21 @@ public class DiTodoController {
 
 		responseMap.put("status", 200);
 		responseMap.put("data", dataListMap);
+		responseMap.put("message", "Successfully Completed");
+
+		return responseMap;
+	}
+	
+	@GetMapping("/todos/{id}")
+	public static Map<String, Object> getTodoById(@PathVariable int id) {
+		Map<String, Object> responseMap = new HashMap<>();
+
+		
+		DiTodo diTodo = diTodos.stream().filter(t -> t.getId()==id).findFirst().get();
+
+
+		responseMap.put("status", 200);
+		responseMap.put("data", diTodo);
 		responseMap.put("message", "Successfully Completed");
 
 		return responseMap;
