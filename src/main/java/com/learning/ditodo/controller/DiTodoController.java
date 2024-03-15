@@ -8,6 +8,8 @@ import java.util.Map;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -53,6 +55,22 @@ public class DiTodoController {
 		responseMap.put("status", 200);
 		responseMap.put("data", diTodo);
 		responseMap.put("message", "Successfully Completed");
+
+		return responseMap;
+	}
+
+	@PostMapping("/todos")
+	public static Map<String, Object> addDiTodo(@RequestBody DiTodo diTodo) {
+		Map<String, Object> responseMap = new HashMap<>();
+
+		try {
+			diTodos.add(diTodo);
+			responseMap.put("status", 200);
+			responseMap.put("message", "di-todo added successfully");
+		} catch (Exception e) {
+			responseMap.put("status", "500");
+			responseMap.put("message", "Error occured while adding di-todo due to" + e.getMessage());
+		}
 
 		return responseMap;
 	}
