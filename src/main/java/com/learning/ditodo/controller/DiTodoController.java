@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +30,7 @@ public class DiTodoController {
 
 	@GetMapping("/hello")
 	public static String hello() {
-		return "hello di-todo API";
+		return "hello DI-Todo API";
 	}
 
 	@GetMapping("/todos")
@@ -51,11 +52,18 @@ public class DiTodoController {
 	public static Map<String, Object> getTodoById(@PathVariable int id) {
 		Map<String, Object> responseMap = new HashMap<>();
 
-		DiTodo diTodo = diTodos.stream().filter(t -> t.getId() == id).findFirst().get();
+		try {
+			DiTodo diTodo = diTodos.stream().filter(t -> t.getId() == id).findFirst().get();
 
-		responseMap.put("status", 200);
-		responseMap.put("data", diTodo);
-		responseMap.put("message", "Successfully Completed");
+			responseMap.put("status", 200);
+			responseMap.put("data", diTodo);
+			responseMap.put("message", "Successfully Completed");
+		}
+		catch(Exception e) {
+			responseMap.put("status", 500);
+			responseMap.put("message", "Error occured while fetching DI-Todo due to " + e.getMessage());
+		}
+		
 
 		return responseMap;
 	}
@@ -67,10 +75,10 @@ public class DiTodoController {
 		try {
 			diTodos.add(diTodo);
 			responseMap.put("status", 200);
-			responseMap.put("message", "di-todo added successfully");
+			responseMap.put("message", "DI-Todo added successfully");
 		} catch (Exception e) {
-			responseMap.put("status", "500");
-			responseMap.put("message", "Error occured while adding di-todo due to" + e.getMessage());
+			responseMap.put("status", 500);
+			responseMap.put("message", "Error occured while adding DI-Todo due to " + e.getMessage());
 		}
 
 		return responseMap;
@@ -85,10 +93,46 @@ public class DiTodoController {
 
 			diTodos.set(index, diTodo);
 			responseMap.put("status", 200);
-			responseMap.put("message", "di-todo updated successfully at id " + id);
+			responseMap.put("message", "DI-Todo updated successfully at id " + id);
 		} catch (Exception e) {
-			responseMap.put("status", "500");
-			responseMap.put("message", "Error occured while adding di-todo due to" + e.getMessage());
+			responseMap.put("status", 500);
+			responseMap.put("message", "Error occured while updating DI-Todo due to " + e.getMessage());
+		}
+
+		return responseMap;
+	}
+
+	@DeleteMapping("/todos/{id}")
+	public static Map<String, Object> deleteDiTodoById(@PathVariable int id) {
+		Map<String, Object> responseMap = new HashMap<>();
+
+		try {
+			int index = diTodos.indexOf(diTodos.stream().filter(t -> t.getId() == id).findFirst().get());
+
+			diTodos.remove(index);
+
+			responseMap.put("status", 200);
+			responseMap.put("message", "DI-Todo with id " + id + " deleted successfully");
+		} catch (Exception e) {
+			responseMap.put("status", 500);
+			responseMap.put("message", "Error occured while deleting DI-todo due to " + e.getMessage());
+		}
+
+		return responseMap;
+	}
+
+	@DeleteMapping("/todos")
+	public static Map<String, Object> deleteAllDiTodos() {
+		Map<String, Object> responseMap = new HashMap<>();
+
+		try {
+			diTodos.clear();
+
+			responseMap.put("status", 200);
+			responseMap.put("message", "All DI-Todos deleted successfully");
+		} catch (Exception e) {
+			responseMap.put("status", 500);
+			responseMap.put("message", "Error occured while deleting all DI-Todos due to " + e.getMessage());
 		}
 
 		return responseMap;
