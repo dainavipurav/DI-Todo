@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,7 +27,7 @@ public class DiTodoController {
 
 	@Autowired
 	private DiTodoRepository repository;
-
+//	Dummy Data
 //	public static ArrayList<DiTodo> diTodos = new ArrayList<>(
 //			Arrays.asList(new DiTodo(1, "Test1", "Description", true, null, null, "H"),
 //					new DiTodo(2, "Test2", "Description", true, null, null, "H"),
@@ -48,6 +49,8 @@ public class DiTodoController {
 
 		Map<String, Object> dataListMap = new HashMap<>();
 
+		diTodos.clear();
+
 		try {
 			repository.findAll().forEach(diTodos::add);
 
@@ -66,15 +69,24 @@ public class DiTodoController {
 	}
 
 	@GetMapping("/todos/{id}")
-	public Map<String, Object> getTodoById(@PathVariable int id) {
+	public Map<String, Object> getDiTodoById(@PathVariable int id) {
 		Map<String, Object> responseMap = new HashMap<>();
 
 		try {
-			DiTodo diTodo = diTodos.stream().filter(t -> t.getId() == id).findFirst().get();
+//			Dummy Call
+//			DiTodo diTodo = diTodos.stream().filter(t -> t.getId() == id).findFirst().get();
 
-			responseMap.put("status", 200);
-			responseMap.put("data", diTodo);
-			responseMap.put("message", "Successfully Completed");
+//			DB Call
+			Optional<DiTodo> diTodo = repository.findById(id);
+
+			if (!diTodo.isEmpty()) {
+				responseMap.put("status", 200);
+				responseMap.put("data", diTodo);
+				responseMap.put("message", "Successfully Completed");
+			} else {
+				responseMap.put("status", 300);
+				responseMap.put("message", "No Di-Todo available with id : " + id);
+			}
 		} catch (Exception e) {
 			responseMap.put("status", 500);
 			responseMap.put("message", "Error occured while fetching DI-Todo due to " + e.getMessage());
@@ -90,6 +102,7 @@ public class DiTodoController {
 		try {
 //			diTodos.add(diTodo);
 
+//			DB Call
 			repository.save(diTodo);
 			responseMap.put("status", 200);
 			responseMap.put("message", "DI-Todo added successfully");
@@ -106,9 +119,13 @@ public class DiTodoController {
 		Map<String, Object> responseMap = new HashMap<>();
 
 		try {
-			int index = diTodos.indexOf(diTodos.stream().filter(t -> t.getId() == id).findFirst().get());
+//			int index = diTodos.indexOf(diTodos.stream().filter(t -> t.getId() == id).findFirst().get());
+//
+//			diTodos.set(index, diTodo);
 
-			diTodos.set(index, diTodo);
+//			DB Call
+			repository.save(diTodo);
+
 			responseMap.put("status", 200);
 			responseMap.put("message", "DI-Todo updated successfully at id " + id);
 		} catch (Exception e) {
@@ -124,9 +141,12 @@ public class DiTodoController {
 		Map<String, Object> responseMap = new HashMap<>();
 
 		try {
-			int index = diTodos.indexOf(diTodos.stream().filter(t -> t.getId() == id).findFirst().get());
+//			int index = diTodos.indexOf(diTodos.stream().filter(t -> t.getId() == id).findFirst().get());
+//
+//			diTodos.remove(index);
 
-			diTodos.remove(index);
+//			DB Call
+			repository.deleteById(id);
 
 			responseMap.put("status", 200);
 			responseMap.put("message", "DI-Todo with id " + id + " deleted successfully");
@@ -143,8 +163,10 @@ public class DiTodoController {
 		Map<String, Object> responseMap = new HashMap<>();
 
 		try {
-			diTodos.clear();
+//			diTodos.clear();
 
+//			DB Call
+			repository.deleteAll();
 			responseMap.put("status", 200);
 			responseMap.put("message", "All DI-Todos deleted successfully");
 		} catch (Exception e) {
