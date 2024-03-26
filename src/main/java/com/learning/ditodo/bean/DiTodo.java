@@ -2,7 +2,15 @@ package com.learning.ditodo.bean;
 
 import java.util.Date;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity(name = "di_todo")
 public class DiTodo {
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	int id;
 	String name;
 	String description;
